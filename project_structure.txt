@@ -1,0 +1,37 @@
+digital_palace/
+├── README.md
+├── requirements.txt
+├── config/
+│   ├── __init__.py
+│   └── settings.py          # 配置文件
+├── src/
+│   ├── __init__.py
+│   ├── core/               # 核心功能模块
+│   │   ├── __init__.py
+│   │   ├── palace.py       # 记忆宫殿核心类
+│   │   ├── memory.py       # 记忆管理
+│   │   └── validator.py    # 输入验证
+│   ├── generators/         # 生成器模块
+│   │   ├── __init__.py
+│   │   ├── text_gen.py     # 文本描述生成器
+│   │   ├── image_gen.py    # 图像生成器
+│   │   └── model_gen.py    # 3D模型生成器
+│   ├── interfaces/         # 接口模块
+│   │   ├── __init__.py
+│   │   ├── chat.py         # 对话系统
+│   │   └── api.py          # API接口
+│   └── utils/             # 工具模块
+│       ├── __init__.py
+│       └── helpers.py      # 辅助函数
+├── tests/                 # 测试目录
+│   ├── __init__.py
+│   ├── test_core/
+│   ├── test_generators/
+│   └── test_interfaces/
+├── data/                 # 数据目录
+│   ├── images/           # 图片存储
+│   ├── models/           # 3D模型存储
+│   └── text/             # 文本存储
+└── docs/                 # 文档目录
+    ├── api.md
+    └── usage.md 

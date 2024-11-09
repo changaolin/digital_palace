@@ -1,0 +1,30 @@
+[project]
+name = "digitalpalace"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "cal", email = "changaolin@gmail.com" }
+]
+dependencies = [
+    "asyncio>=3.4.3",
+    "openai>=1.54.3",
+    "pydantic-settings>=2.6.1",
+    "sqlalchemy>=2.0.36",
+    "pillow>=11.0.0",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/digitalpalace"]
