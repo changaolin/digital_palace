@@ -1,21 +1,74 @@
-from palace.base_llm import BaseLLM
+from .base_llm import BaseLLM
+import aiohttp
 
 class MemoryPalace:
     def __init__(self):
         self.llm = BaseLLM()
 
-    async def generate_palace(self, numbers: list[int]) -> str:
-        # 构建 prompt
-        prompt = self._build_prompt(numbers)
-
-        # 调用修改后的 generate 方法，传入 number 参数
+    async def generate_palace(self, numbers: list[int]) -> dict:
+        """生成记忆宫殿及其相关资源"""
         try:
-            response = await self.llm.generate(numbers=numbers, prompt=prompt)
-            return response
+            # 1. 构建 prompt
+            prompt = self._build_prompt(numbers)
+
+            # 2. 检查缓存
+            cached_result = self.llm.db_service.get_full_cached_response(numbers, prompt)
+            if cached_result:
+                return cached_result
+            # 3. 生成文字描述
+            description = await self.llm.generate(numbers=numbers, prompt=prompt)
+
+            # 4. 生成场景图片
+            image_data = await self._generate_scene_image(description)
+
+            # 5. 保存描述和图片
+            result = self.llm.db_service.save_response_with_model(
+                numbers=numbers,
+                prompt=prompt,
+                response=description,
+                model_data=image_data,
+                model_type="image",
+                file_format="png"
+            )
+
+            return {
+                "description": result["response"],
+                "image_path": result["model_path"],
+                "numbers": numbers
+            }
+
         except Exception as e:
             raise Exception(f"生成记忆宫殿失败: {str(e)}")
 
+    async def _generate_scene_image(self, description: str) -> bytes:
+        """生成场景图片"""
+        try:
+            image_prompt = f"""
+            Create a detailed 3D visualization of this memory palace scene:
+            {description}
+            Style: 3D rendering, architectural visualization, detailed, realistic
+            """
+
+            response = await self.llm.client.images.generate(
+                model="dall-e-3",
+                prompt=image_prompt,
+                size="1024x1024",
+                quality="standard",
+                n=1
+            )
+
+            # 获取图片数据
+            image_url = response.data[0].url
+            async with aiohttp.ClientSession() as session:
+                async with session.get(image_url) as response:
+                    image_data = await response.read()
+                    return image_data
+
+        except Exception as e:
+            raise Exception(f"场景图片生成失败: {str(e)}")
+
     def _build_prompt(self, numbers: list[int]) -> str:
+        """构建提示词"""
         numbers_str = " ".join(map(str, numbers))
         return f"""请为数字序列 {numbers_str} 创建一个生动、具体且易于记忆的场景描述。
 

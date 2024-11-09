@@ -4,6 +4,7 @@ from palace.memory_palace import MemoryPalace
 async def main():
     # 示例数字序列
     numbers = [3, 1, 4, 1, 5, 9, 2, 6]
+    numbers = [879,222,34112]
 
     generator = MemoryPalace()
     try:

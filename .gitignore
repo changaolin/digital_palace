@@ -35,3 +35,14 @@ ENV/
 *.swo
 .DS_Store
 *.sublime-workspace
+
+# Model storage
+storage/
+storage/models/
+*.glb
+*.fbx
+*.obj
+*.mtl
+*.png
+*.jpg
+*.jpeg
